@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "289531674294",
+    "firebase_url": "https://vocabularyapp-baa0c.firebaseio.com",
+    "project_id": "vocabularyapp-baa0c",
+    "storage_bucket": "vocabularyapp-baa0c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289531674294:android:4d8d120aa3462c57223017",
+        "android_client_info": {
+          "package_name": "com.example.vocabularyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289531674294-47qus165d90tj4l5vmq8bpf4p9ua0u95.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vocabularyapp",
+            "certificate_hash": "c3f72090528086c98b9313a09d234ac237cc1a75"
+          }
+        },
+        {
+          "client_id": "289531674294-crur55vcd49g5eqmqeq7l0dv8ejamb3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_gsZQ-jXmlRJazv29uRYLglbCdANVews"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289531674294-crur55vcd49g5eqmqeq7l0dv8ejamb3r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

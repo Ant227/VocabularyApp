@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".RegisterActivity">
+
+    <TextView
+        android:id="@+id/register_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textColor="@color/colorText"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginTop="40dp"
+        />
+
+
+
+    <LinearLayout
+        android:id="@+id/register_input_text_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/register_logo"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose profile Logo"
+            android:gravity="center"
+            android:textColor="@color/colorTextView"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center">
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/emoji1" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/emoji5" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/emoji3" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/emoji4" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/emoji2" />
+        </LinearLayout>
+
+        username
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            app:hintEnabled="true"
+            android:textColorHint="@color/colorTextlight"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_username"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:hint="username"
+                android:textColor="@color/colorText"
+                android:backgroundTint="@color/colorBlack"
+                android:inputType="textPersonName"
+                 />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        gmail address
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:textColorHint="@color/colorTextlight">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_gmail"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:hint="gmail address"
+                android:textColor="@color/colorText"
+                android:backgroundTint="@color/colorBlack"
+                android:inputType="textEmailAddress"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        password
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/colorText"
+            android:textColorHint="@color/colorTextlight">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_password"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:hint="password"
+                android:textColor="@color/colorText"
+                android:backgroundTint="@color/colorBlack"
+                android:inputType="textPassword"
+                app:passwordToggleEnabled="true"
+
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        confirm password
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:passwordToggleEnabled="true"
+            android:textColorHint="@color/colorTextlight"
+            app:passwordToggleTint="@color/colorText">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:hint="confirm password"
+                android:textColor="@color/colorText"
+                android:backgroundTint="@color/colorBlack"
+                android:inputType="textPassword"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:onClick="createAccount"
+        android:layout_width="132dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/register_input_text_group"
+        android:text="Create"
+        android:textColor="@color/colorText"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/main__activity_register_button"/>
+
+
+</RelativeLayout>
