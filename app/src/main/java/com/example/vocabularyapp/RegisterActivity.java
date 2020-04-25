@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     userHashMap.put("date",date);
 
                                     currentUid = mAuth.getUid();
-                                    userRef.child(username + "__"+ currentUid).updateChildren(userHashMap)
+                                    userRef.child(currentUid).child("user_info").updateChildren(userHashMap)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {

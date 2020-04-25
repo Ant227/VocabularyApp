@@ -8,53 +8,140 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
+
+    <!-- Top profile layer-->
+    <LinearLayout
+        android:id="@+id/main_profile_layer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/main__activity_register_button">
+
+    <TextView
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="28dp"
+        android:background="@drawable/profile_logo"
+        android:padding="2dp"
+        android:gravity="center"
+        android:text="🐵"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/main_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:textSize="10sp"
+                android:text="User name"
+                android:textColor="@color/colorText"
+
+                />
+            <TextView
+                android:id="@+id/main_book_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:textSize="10sp"
+                android:text="Book name"
+                android:textColor="@color/colorText"
+
+                />
+            <TextView
+                android:id="@+id/main_word_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:textSize="10sp"
+                android:text="10/50"
+                android:textColor="@color/colorText"
+
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/main_profile_layer"
+        android:layout_marginTop="60dp"
+
         android:orientation="vertical">
 
-
-        <ImageView
-            android:layout_width="54dp"
-            android:layout_height="64dp"
-            android:src="@drawable/app_logo"
-            android:layout_gravity="center_horizontal"/>
-
         <TextView
+            android:id="@+id/main_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_intro_description"
             android:layout_gravity="center_horizontal"
-            android:padding="20dp"
-            android:lineSpacingExtra="22dp"
-            android:textColor="@color/colorTextView"
-            />
+            android:text="7 Nov 1999"
+            android:textColor="@color/colorText"
+            android:scrollbarSize="15sp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Main Activity"
-            android:layout_gravity="center_horizontal"
-            android:padding="8dp"
-            android:textSize="30dp"
-            android:textColor="@color/colorTextView"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="logout"
-            android:text="Logout"
-            android:background="@drawable/main__activity_register_button"
-            android:layout_gravity="center_horizontal"
-            android:padding="16dp"
-            android:textSize="30dp"
-            android:textColor="@color/colorTextView"
-            />
+            <TextView
+                android:id="@+id/main_less_than"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:layout_weight="1"
+                android:text="\u003C"
+                android:textColor="@color/colorBlack"/>
+            <TextView
+                android:id="@+id/main_day"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:layout_weight="1"
+                android:text="Day 7"
+                android:textColor="@color/colorBlack"/>
+            <TextView
+                android:id="@+id/main_greater_than"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:layout_weight="1"
+                android:text="\u003E"
+                android:textColor="@color/colorBlack"/>
+
+
+        </LinearLayout>
+
 
 
     </LinearLayout>
 
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:onClick="logout"
+        android:text="Logout"
+        android:background="@drawable/main__activity_register_button"
+        android:layout_gravity="center_horizontal"
+        android:padding="16dp"
+        android:textSize="30dp"
+        android:textColor="@color/colorTextView"
+        />
 
 </RelativeLayout>
