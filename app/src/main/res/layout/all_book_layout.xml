@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorWhite"
+        android:elevation="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/all_book_layout_book_pic"
+                android:layout_width="96dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/register_text_input"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"
+                android:orientation="vertical">
+
+              <TextView
+                  android:id="@+id/all_book_layout_book_name"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="15sp"
+                  android:padding="8dp"
+                  android:text="Book Name"
+                  android:textStyle="bold"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorText"/>
+                <TextView
+                    android:id="@+id/all_book_layout_word_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:padding="8dp"
+                    android:text="200 words"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorText"/>
+                <TextView
+                    android:id="@+id/all_book_layout_day_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:padding="8dp"
+                    android:text="40 days"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorText"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

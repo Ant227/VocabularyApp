@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     userHashMap.put("date",date);
 
                                     currentUid = mAuth.getUid();
-                                    userRef.child(currentUid).child("user_info").updateChildren(userHashMap)
+                                    userRef.child(currentUid).updateChildren(userHashMap)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -99,6 +99,22 @@ public class RegisterActivity extends AppCompatActivity {
                                                         Toast.makeText(RegisterActivity.this,
                                                                 "Account has been created successfully!",
                                                                 Toast.LENGTH_SHORT).show();
+
+                                                        HashMap<String, Object> bookHashMap = new HashMap<>();
+
+                                                        bookHashMap.put("book_status","none");
+
+                                                        userRef.child(currentUid).child("user_book").updateChildren(bookHashMap)
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if(!task.isSuccessful()){
+                                                                            Toast.makeText(RegisterActivity.this, "Error on updating book status", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    }
+                                                                });
+
+
                                                     }
                                                     else
                                                     {

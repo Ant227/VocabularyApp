@@ -53,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
         greaterThan = findViewById(R.id.main_greater_than);
 
         settingUserName();
-         calendar = Calendar.getInstance();
-         currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
-         date.setText(currentDate);
-         dayCount.setText("Day " + day);
+        settingBookName();
+
+        calendar = Calendar.getInstance();
+        currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+        date.setText(currentDate);
+        dayCount.setText("Day " + day);
 
         lessThan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,17 +91,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void settingBookName()
+    {
+        userRef.child(mAuth.getUid()).child("user_book").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String book_status = dataSnapshot.child("book_status").getValue().toString();
+                    bookName.setText(book_status);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private void settingUserName() {
 
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                    String currentUid = mAuth.getUid();
-                   String username = dataSnapshot.child(currentUid).child("user_info")
-                           .child("name").getValue().toString();
-                   userName.setText(username);
+                    if(!(mAuth.getCurrentUser() == null)){
+                        String currentUid = mAuth.getUid();
+                        String username = dataSnapshot.child(currentUid)
+                                .child("name").getValue().toString();
+                        userName.setText(username);
+                    }
+
 
                 }
             }
@@ -109,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
@@ -124,6 +148,37 @@ public class MainActivity extends AppCompatActivity {
             startActivity(loginIntent);
             finish();
         }
+        else
+        {
+            checkSelectedBook();
+        }
+    }
+
+    private void checkSelectedBook()
+    {
+        userRef.child(mAuth.getUid()).child("user_book").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String book_status = dataSnapshot.child("book_status").getValue().toString();
+                    if(book_status.equals("none")){
+                        sendUserToChooseBookActivity();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendUserToChooseBookActivity() {
+        Intent intent = new Intent(MainActivity.this, ChooseBookActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     public void logout(View view)

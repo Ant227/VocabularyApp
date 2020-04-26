@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    tools:context=".ChooseBookActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorText"
+        android:text="From which book you want to learn VOCABULARY?"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:padding="4dp"
+        android:text="Remind me"
+        android:textColor="@color/colorText"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp" />
+    
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="7:30 AM"
+        android:textSize="20sp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:textColor="@color/colorBlack"
+        android:background="@drawable/register_text_input"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:id="@+id/recycler_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/choose_book_finishBtn">
+
+            <ProgressBar
+                android:id="@+id/progress_circle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+
+                android:id="@+id/choose_book_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="32dp"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+
+            android:visibility="gone"
+            android:id="@+id/choose_book_selected_book_relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/choose_book_finishBtn">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp"
+                android:background="@color/colorWhite"
+                android:elevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="You have selected this book."
+                        android:textAlignment="center"
+                        android:textColor="@color/colorText"
+                        android:textSize="12sp"
+                        android:padding="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/choose_book_pic"
+                        android:layout_width="120dp"
+                        android:layout_height="160dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/register_text_input"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorWhite"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/choose_book_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:padding="8dp"
+                            android:text="Book Name"
+                            android:textStyle="bold"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorText"/>
+                        <TextView
+                            android:id="@+id/choose_book_word_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:padding="8dp"
+                            android:text="200 words"
+                            android:textStyle="bold"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorText"/>
+                        <TextView
+                            android:id="@+id/choose_book_day_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:padding="8dp"
+                            android:text="40 days"
+                            android:textStyle="bold"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorText"/>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/choose_book_finishBtn"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="32dp"
+                android:layout_width="160dp"
+                android:layout_height="40dp"
+                android:text="Finish"
+                android:background="@drawable/main__activity_register_button"
+                android:textColor="@color/colorText"/>
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>
