@@ -124,6 +124,7 @@ public class ChooseBookActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
+
         selectedBookPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
