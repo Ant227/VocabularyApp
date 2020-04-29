@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
                 }
 
-                updateQuery(1);
+                updateQuery((day * 5) - 4);
             }
         });
 
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 date.setText(currentDate);
                 dayCount.setText("Day " + day);
 
-                updateQuery(6);
+                updateQuery((day * 5) - 4);
             }
         });
 
