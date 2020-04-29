@@ -7,7 +7,7 @@ public class Book {
         //needed
     }
 
-    public Book(String book_name, String wordcount, String daycount, String bookpic) {
+    public Book(String bookname, String wordcount, String daycount, String bookpic) {
         this.bookname = bookname;
         this.wordcount = wordcount;
         this.daycount = daycount;

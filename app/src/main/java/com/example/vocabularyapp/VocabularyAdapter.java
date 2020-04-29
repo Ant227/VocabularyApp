@@ -1,12 +1,15 @@
+package com.example.vocabularyapp;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.vocabularyapp.R;
-import com.example.vocabularyapp.Vocabulary;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
@@ -21,6 +24,7 @@ public class VocabularyAdapter extends FirebaseRecyclerAdapter<Vocabulary, Vocab
     @Override
     protected void onBindViewHolder(@NonNull VocabularyHolder holder, int position, @NonNull Vocabulary model) {
         holder.vocabularyTextView.setText(model.getWord());
+
     }
 
     @NonNull

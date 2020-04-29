@@ -2,6 +2,8 @@ package com.example.vocabularyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,9 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
+    private FirebaseRecyclerAdapter adapter;
+
 
     private TextView userName, bookName, wordCount;
     private TextView date, lessThan, dayCount, greaterThan;
+
+    private RecyclerView recyclerView;
 
     private Calendar calendar;
     private String currentDate;
@@ -42,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         userRef = FirebaseDatabase.getInstance().getReference().child("users");
         mAuth = FirebaseAuth.getInstance();
         userName = findViewById(R.id.main_username);
@@ -51,14 +60,17 @@ public class MainActivity extends AppCompatActivity {
         lessThan = findViewById(R.id.main_less_than);
         dayCount = findViewById(R.id.main_day);
         greaterThan = findViewById(R.id.main_greater_than);
+        recyclerView = findViewById(R.id.main_recyclerview);
+
 
         settingUserName();
-        settingBookName();
-        displayingVocabulary();
+
         calendar = Calendar.getInstance();
         currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
         date.setText(currentDate);
         dayCount.setText("Day " + day);
+
+        displayingVocabulary(1);
 
         lessThan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
                 }
 
+                updateQuery(1);
             }
         });
 
@@ -84,13 +97,47 @@ public class MainActivity extends AppCompatActivity {
                 String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
                 date.setText(currentDate);
                 dayCount.setText("Day " + day);
+
+                updateQuery(6);
             }
         });
 
+
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
-    private void displayingVocabulary()
+    private void updateQuery(int start){
+
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .child("books").child("the_godfather").child("words")
+                .orderByKey()
+                .startAt(String.valueOf(start)).limitToFirst(5);
+
+        FirebaseRecyclerOptions<Vocabulary> options =
+                new FirebaseRecyclerOptions.Builder<Vocabulary>()
+                        .setQuery(query, Vocabulary.class)
+                        .build();
+
+        adapter.updateOptions(options);
+    }
+    private void displayingVocabulary(int start)
     {
+       Query query = FirebaseDatabase.getInstance().getReference()
+            .child("books").child("the_godfather").child("words")
+            .orderByKey()
+            .startAt(String.valueOf(start)).limitToFirst(5);
+
+        FirebaseRecyclerOptions<Vocabulary> options =
+                new FirebaseRecyclerOptions.Builder<Vocabulary>()
+                        .setQuery(query, Vocabulary.class)
+                        .build();
+
+        adapter = new VocabularyAdapter(options,getApplicationContext());
+
+
 
 
     }
@@ -140,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-
+        adapter.startListening();
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -151,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         } else {
             checkSelectedBook();
+            settingBookName();
         }
     }
 
