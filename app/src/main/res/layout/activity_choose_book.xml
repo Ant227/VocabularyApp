@@ -47,8 +47,7 @@
         <RelativeLayout
             android:id="@+id/recycler_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/choose_book_finishBtn">
+            android:layout_height="match_parent">
 
             <ProgressBar
                 android:id="@+id/progress_circle"

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
     private String currentDate;
     private int day = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
                 dayCount.setText("Day " + day);
 
                 updateQuery((day * 5) - 4);
+
+                if (day > 4) {
+                    Toast.makeText(MainActivity.this, "No more data!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void updateQuery(int start){
+    private void updateQuery(int start) {
 
         Query query = FirebaseDatabase.getInstance().getReference()
                 .child("books").child("the_godfather").child("words")
@@ -123,21 +129,19 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.updateOptions(options);
     }
-    private void displayingVocabulary(int start)
-    {
-       Query query = FirebaseDatabase.getInstance().getReference()
-            .child("books").child("the_godfather").child("words")
-            .orderByKey()
-            .startAt(String.valueOf(start)).limitToFirst(5);
+
+    private void displayingVocabulary(int start) {
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .child("books").child("the_godfather").child("words")
+                .orderByKey()
+                .startAt(String.valueOf(start)).limitToFirst(5);
 
         FirebaseRecyclerOptions<Vocabulary> options =
                 new FirebaseRecyclerOptions.Builder<Vocabulary>()
                         .setQuery(query, Vocabulary.class)
                         .build();
 
-        adapter = new VocabularyAdapter(options,getApplicationContext());
-
-
+        adapter = new VocabularyAdapter(options, getApplicationContext());
 
 
     }
