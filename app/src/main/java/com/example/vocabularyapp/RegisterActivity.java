@@ -86,6 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     userHashMap.put("name",username);
                                     userHashMap.put("gmail",email);
                                     userHashMap.put("date",date);
+                                    userHashMap.put("book_status","none");
 
                                     currentUid = mAuth.getUid();
                                     userRef.child(currentUid).updateChildren(userHashMap)
@@ -100,19 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                 "Account has been created successfully!",
                                                                 Toast.LENGTH_SHORT).show();
 
-                                                        HashMap<String, Object> bookHashMap = new HashMap<>();
 
-                                                        bookHashMap.put("book_status","none");
-
-                                                        userRef.child(currentUid).child("user_book").updateChildren(bookHashMap)
-                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if(!task.isSuccessful()){
-                                                                            Toast.makeText(RegisterActivity.this, "Error on updating book status", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                });
 
 
                                                     }

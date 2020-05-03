@@ -21,6 +21,8 @@ public class BookAdapter extends FirebaseRecyclerAdapter<Book, BookAdapter.BookV
     public Context mcontext;
 
 
+
+
     public BookAdapter(@NonNull FirebaseRecyclerOptions<Book> options,Context context) {
         super(options);
         mcontext = context;
@@ -39,12 +41,17 @@ public class BookAdapter extends FirebaseRecyclerAdapter<Book, BookAdapter.BookV
 //                .centerCrop()
 //                .into(holder.bookPic);
 
+
+
+
     }
 
     @NonNull
     @Override
     public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mcontext).inflate(R.layout.all_book_layout,parent,false);
+
+
         return new BookViewHolder(view);
     }
 

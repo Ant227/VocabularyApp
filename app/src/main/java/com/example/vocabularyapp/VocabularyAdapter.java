@@ -1,6 +1,7 @@
 package com.example.vocabularyapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,24 @@ public class VocabularyAdapter extends FirebaseRecyclerAdapter<Vocabulary, Vocab
 
     @Override
     protected void onBindViewHolder(@NonNull VocabularyHolder holder, int position, @NonNull Vocabulary model) {
+
         holder.vocabularyTextView.setText(model.getWord());
+
+        final String postKey = getRef(position).getKey();
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendUserToClickVocabularyActivity(postKey);
+            }
+        });
+    }
+
+    private void SendUserToClickVocabularyActivity(String postKey) {
+        Intent intent = new Intent(context, ClickVocabularyActivity.class);
+        intent.putExtra("postkey", postKey);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+        context.startActivity(intent);
 
     }
 
