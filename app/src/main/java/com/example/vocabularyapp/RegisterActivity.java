@@ -2,6 +2,8 @@ package com.example.vocabularyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -29,6 +33,17 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String currentUid;
 
+    private RecyclerView recyclerView;
+    private int[] images = {R.drawable.emoji1,R.drawable.emoji2,
+                            R.drawable.emoji3,R.drawable.emoji4,
+                            R.drawable.emoji5,R.drawable.emoji6,
+                            R.drawable.emoji7};
+
+    private CircularImageView circularImageView;
+
+    private LinearLayoutManager linearLayoutManager;
+
+    private RecyclerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +56,16 @@ public class RegisterActivity extends AppCompatActivity {
         registerPassword = findViewById(R.id.register_password);
         registerConfirmPassword = findViewById(R.id.register_confirm_password);
 
+        recyclerView = findViewById(R.id.recyclerViewLogo);
+        circularImageView = findViewById(R.id.selectedLogo);
 
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        adapter = new RecyclerAdapter(images,circularImageView);
+
+        recyclerView.setAdapter(adapter);
     }
 
     public void createAccount(View view){
@@ -53,6 +77,9 @@ public class RegisterActivity extends AppCompatActivity {
         final  String email  = registerGmail.getText().toString();
         final  String password = registerPassword.getText().toString();
         final String confirm_password = registerConfirmPassword.getText().toString();
+        final int selectedLogoLocation;
+
+        selectedLogoLocation = adapter.returnSelectedLogo();
 
         if(       TextUtils.isEmpty(username)
                 ||TextUtils.isEmpty(email)
@@ -86,6 +113,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     userHashMap.put("name",username);
                                     userHashMap.put("gmail",email);
                                     userHashMap.put("date",date);
+                                    userHashMap.put("logoPicLocation",selectedLogoLocation);
+                                    userHashMap.put("book_status","none");
 
                                     currentUid = mAuth.getUid();
                                     userRef.child(currentUid).updateChildren(userHashMap)
@@ -153,5 +182,8 @@ public class RegisterActivity extends AppCompatActivity {
         intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
         finish();
+    }
+
+    public void logoChoose(View view) {
     }
 }
