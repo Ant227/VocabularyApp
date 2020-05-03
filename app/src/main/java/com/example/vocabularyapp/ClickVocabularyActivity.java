@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +27,8 @@ public class ClickVocabularyActivity extends AppCompatActivity {
     private String currentUid;
 
     private TextView userName, bookName, wordCount, lessThan, wordValue, greaterThan , meaningValue, bookExample;
-
+    private ImageView userProfile;
+    private int count,wordPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,9 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         getIntent = getIntent();
         wordRefKey = getIntent.getStringExtra("postkey");
 
+        wordPosition = Integer.parseInt(wordRefKey);
+
+        count = getCount();
 
         mAuth = FirebaseAuth.getInstance();
         currentUid = mAuth.getUid();
@@ -49,13 +54,56 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         greaterThan = findViewById(R.id.click_vocabulary_greater_than);
         meaningValue = findViewById(R.id.click_vocabulary_meaning);
         bookExample = findViewById(R.id.click_vocabulary_book_example);
+        userProfile = findViewById(R.id.click_vocabulary_profile);
 
        settingUserInfoAndWord();
 
+       greaterThan.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               if(count != 0){
+                   count--;
+                   wordPosition++;
+                   settingUpWord(String.valueOf(wordPosition));
 
+               }
+               else {
+                   count = 4;
+                   wordPosition = wordPosition - 4;
+                   settingUpWord(String.valueOf(wordPosition));
+               }
+
+           }
+       });
+
+       lessThan.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               if(count != 4){
+                   count++;
+                   wordPosition--;
+                   settingUpWord(String.valueOf(wordPosition));
+               }
+               else {
+                   count = 0;
+                   wordPosition = wordPosition + 4;
+                   settingUpWord(String.valueOf(wordPosition));
+               }
+           }
+       });
     }
 
-    private void settingUpWord() {
+    private int getCount() {
+        int position = wordPosition;
+        int i = 0;
+        while (position%5 != 0){
+            i++;
+            position++;
+        }
+        return i;
+    }
+
+    private void settingUpWord(String wordRefKey) {
 
         wordRef = FirebaseDatabase.getInstance().getReference().child("books")
                 .child(bookNameString).child("words").child(wordRefKey);
@@ -96,7 +144,9 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                     bookNameString = dataSnapshot.child("book_status").getValue().toString();
                     bookName.setText(bookNameString);
 
-                    settingUpWord();
+                    int imageId = Integer.valueOf(dataSnapshot.child("profile").getValue().toString());
+                    userProfile.setImageResource(imageId);
+                    settingUpWord(wordRefKey);
                 }
 
             }

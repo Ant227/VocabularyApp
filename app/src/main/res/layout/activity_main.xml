@@ -19,18 +19,16 @@
         android:background="@drawable/main__activity_register_button"
         android:orientation="horizontal">
 
-        <TextView
+        <ImageView
+            android:id="@+id/main_user_profile"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/profile_logo"
-            android:gravity="center"
+            android:scaleType="centerCrop"
             android:onClick="logout"
-            android:padding="2dp"
-            android:text="🐵"
             android:textSize="28dp" />
 
         <LinearLayout

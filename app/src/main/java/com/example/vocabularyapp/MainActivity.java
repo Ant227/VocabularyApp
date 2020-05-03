@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference userRef;
     private FirebaseRecyclerAdapter adapter;
 
-
+    private ImageView userProfile;
     private TextView userName, bookName, wordCount;
     private TextView date, lessThan, dayCount, greaterThan;
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         userRef = FirebaseDatabase.getInstance().getReference().child("users");
         mAuth = FirebaseAuth.getInstance();
+        userProfile = findViewById(R.id.main_user_profile);
         userName = findViewById(R.id.main_username);
         bookName = findViewById(R.id.main_book_name);
         wordCount = findViewById(R.id.main_word_count);
@@ -69,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         greaterThan = findViewById(R.id.main_greater_than);
         recyclerView = findViewById(R.id.main_recyclerview);
         linearLayout = findViewById(R.id.main_date_layout);
-
         linearLayout.setVisibility(View.INVISIBLE);
 
 
@@ -190,6 +191,10 @@ public class MainActivity extends AppCompatActivity {
                         book_status = dataSnapshot.child(currentUid)
                                 .child("book_status").getValue().toString();
                         bookName.setText(book_status);
+
+                        int imageId = Integer.valueOf(dataSnapshot.child(currentUid).child("profile").getValue().toString());
+                        userProfile.setImageResource(imageId);
+
                         displayingVocabulary(part);
                     }
 
