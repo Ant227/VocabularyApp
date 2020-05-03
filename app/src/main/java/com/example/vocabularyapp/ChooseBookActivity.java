@@ -11,14 +11,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,6 +51,9 @@ public class ChooseBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_book);
 
+
+
+
         finishBtn = findViewById(R.id.choose_book_finishBtn);
          selectedBookLayout = findViewById(R.id.choose_book_selected_book_relativeLayout);
          recyclerLayout = findViewById(R.id.recycler_layout);
@@ -81,6 +80,7 @@ public class ChooseBookActivity extends AppCompatActivity {
             public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(ChooseBookActivity.this).inflate(R.layout.all_book_layout,parent,false);
                 return new BookViewHolder(view);
+
             }
 
             @Override
@@ -112,11 +112,10 @@ public class ChooseBookActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
             }
         };
+
+
 
         recyclerView =  findViewById(R.id.choose_book_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -141,7 +140,7 @@ public class ChooseBookActivity extends AppCompatActivity {
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     String currentUid = mAuth.getUid();
                     final DatabaseReference userBookRef = FirebaseDatabase.getInstance().getReference()
-                            .child("users").child(currentUid).child("user_book");
+                            .child("users").child(currentUid);
 
                     userBookRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -179,7 +178,6 @@ public class ChooseBookActivity extends AppCompatActivity {
 
     private void sendUserToMainActivity() {
         Intent intentMain = new Intent(ChooseBookActivity.this, MainActivity.class);
-        intentMain.putExtra("bookname",Book_Name);
         intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
         finish();
@@ -195,7 +193,7 @@ public class ChooseBookActivity extends AppCompatActivity {
 
             bookPic = itemView.findViewById(R.id.all_book_layout_book_pic);
             bookName = itemView.findViewById(R.id.all_book_layout_book_name);
-            wordCount = itemView.findViewById(R.id.all_book_layout_word_count);
+           wordCount = itemView.findViewById(R.id.all_book_layout_word_count);
             dayCount = itemView.findViewById(R.id.all_book_layout_day_count);
 
         }
