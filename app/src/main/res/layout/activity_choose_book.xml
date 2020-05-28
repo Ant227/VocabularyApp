@@ -15,10 +15,11 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:gravity="center"
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
         android:layout_marginTop="20dp"
-        android:textSize="20sp"
+        android:textSize="36dp"
         android:textColor="@color/colorText"
-        android:text="From which book you want to learn VOCABULARY?"/>
+        android:text="Set Up"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,7 +74,7 @@
             android:id="@+id/choose_book_selected_book_relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/choose_book_finishBtn">
+            >
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -156,6 +157,8 @@
 
             </androidx.cardview.widget.CardView>
 
+
+
             <Button
                 android:id="@+id/choose_book_finishBtn"
                 android:layout_alignParentBottom="true"
@@ -168,15 +171,7 @@
                 android:background="@drawable/main__activity_register_button"
                 android:textColor="@color/colorText"/>
 
-
         </RelativeLayout>
-
-
-
-
-
-
-
 
     </RelativeLayout>
 

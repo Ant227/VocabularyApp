@@ -4,8 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+
 public class ClickVocabularyActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -24,9 +31,10 @@ public class ClickVocabularyActivity extends AppCompatActivity {
     private Intent getIntent;
 
     private String wordRefKey, bookNameString;
-    private String currentUid;
+    private String currentUid, audioUrl;
 
-    private TextView userName, bookName, wordCount, lessThan, wordValue, greaterThan , meaningValue, bookExample;
+    private TextView userName, bookName, meaningValue, bookExample;
+    private Button wordValue;
     private ImageView userProfile;
     private int count,wordPosition = 0;
 
@@ -48,49 +56,45 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
         userName = findViewById(R.id.click_vocabulary_username);
         bookName = findViewById(R.id.click_vocabulary_book_name);
-        wordCount = findViewById(R.id.click_vocabulary_word_count);
-        lessThan = findViewById(R.id.click_vocabulary_less_than);
         wordValue = findViewById(R.id.click_vocabulary_vocabulary);
-        greaterThan = findViewById(R.id.click_vocabulary_greater_than);
         meaningValue = findViewById(R.id.click_vocabulary_meaning);
         bookExample = findViewById(R.id.click_vocabulary_book_example);
         userProfile = findViewById(R.id.click_vocabulary_profile);
 
-       settingUserInfoAndWord();
 
-       greaterThan.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if(count != 0){
-                   count--;
-                   wordPosition++;
-                   settingUpWord(String.valueOf(wordPosition));
+        wordValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final MediaPlayer mediaPlayer = new MediaPlayer();
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                try {
+                    mediaPlayer.stop();
+                    mediaPlayer.setDataSource(audioUrl);
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                           mp.start();
+                        }
+                    });
+                    mediaPlayer.prepare();
 
-               }
-               else {
-                   count = 4;
-                   wordPosition = wordPosition - 4;
-                   settingUpWord(String.valueOf(wordPosition));
-               }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-           }
-       });
+            }
+        });
 
-       lessThan.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if(count != 4){
-                   count++;
-                   wordPosition--;
-                   settingUpWord(String.valueOf(wordPosition));
-               }
-               else {
-                   count = 0;
-                   wordPosition = wordPosition + 4;
-                   settingUpWord(String.valueOf(wordPosition));
-               }
-           }
-       });
+
+
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        settingUserInfoAndWord();
     }
 
     private int getCount() {
@@ -113,14 +117,14 @@ public class ClickVocabularyActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String word = dataSnapshot.child("word").getValue().toString();
+                 String   wordString = dataSnapshot.child("word").getValue().toString();
                     String meaning = dataSnapshot.child("meaning").getValue().toString();
                     String example = dataSnapshot.child("example").getValue().toString();
+                    audioUrl   = dataSnapshot.child("audio").getValue(String.class);
 
-                    wordValue.setText(word);
+                    wordValue.setText(wordString);
                     meaningValue.setText(meaning);
                     bookExample.setText(example);
-
                 }
             }
 

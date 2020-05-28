@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
+            android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
             android:textColor="@color/colorText"
             android:textSize="30dp"
             android:textStyle="bold"
@@ -34,7 +35,6 @@
             android:src="@drawable/emoji1"/>
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/register_input_text_group"
         android:layout_width="match_parent"
@@ -48,12 +48,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Choose profile Logo"
-            android:gravity="center"
-            android:textColor="@color/colorTextView"/>
+            android:text="Choose avatar"
+            android:textSize="16dp"
+            android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
+            android:textColor="@color/colorBlack"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="8dp"
             android:id="@+id/recyclerViewLogo"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
@@ -154,12 +156,15 @@
         android:onClick="createAccount"
         android:layout_width="132dp"
         android:layout_height="40dp"
-        android:layout_below="@id/register_input_text_group"
-        android:text="Create"
+        android:text="NEXT"
         android:textColor="@color/colorText"
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="19dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="50dp"
+        android:textSize="15dp"
         android:background="@drawable/main__activity_register_button"/>
 
 

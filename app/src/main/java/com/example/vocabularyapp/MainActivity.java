@@ -3,6 +3,7 @@ package com.example.vocabularyapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Calendar calendar;
     private String currentDate, book_status;
+    private RecyclerView.LayoutManager layoutManager;
     private int part = 1;
     LinearLayout linearLayout;
 
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
                 }
 
-                updateQuery((part * 5) - 4);
+                updateQuery((part * 6) - 5);
             }
         });
 
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 part++;
                 dayCount.setText("Part " + part);
-                updateQuery((part * 5) - 4);
+                updateQuery((part * 6) - 5);
                 if (part > 4) {
                     Toast.makeText(MainActivity.this, "No more data!", Toast.LENGTH_SHORT).show();
                 }
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             Query query = FirebaseDatabase.getInstance().getReference()
                     .child("books").child(book_status).child("words")
                     .orderByKey()
-                    .startAt(String.valueOf(start)).limitToFirst(5);
+                    .startAt(String.valueOf(start)).limitToFirst(6);
 
             FirebaseRecyclerOptions<Vocabulary> options =
                     new FirebaseRecyclerOptions.Builder<Vocabulary>()
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             Query query = FirebaseDatabase.getInstance().getReference()
                     .child("books").child(book_status).child("words")
                     .orderByKey()
-                    .startAt(String.valueOf(start)).limitToFirst(5);
+                    .startAt(String.valueOf(start)).limitToFirst(6);
 
             FirebaseRecyclerOptions<Vocabulary> options =
                     new FirebaseRecyclerOptions.Builder<Vocabulary>()
@@ -146,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
             adapter = new VocabularyAdapter(options, getApplicationContext());
 
             recyclerView.setHasFixedSize(true);
-            final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
-            recyclerView.setLayoutManager(linearLayoutManager);
+            layoutManager = new GridLayoutManager(MainActivity.this,2);
+            recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
 
             adapter.startListening();
