@@ -11,4 +11,5 @@
     <color name="colorArrow">#C6C6C6</color>
     <color name="colorBackground">#EFEFEF</color>
     <color name="colorYellow">#F6FF00</color>
+    <color name="colotTransprantWhite">#cccccc</color>
 </resources>

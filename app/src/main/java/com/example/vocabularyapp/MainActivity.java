@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                         int imageId = Integer.valueOf(dataSnapshot.child(currentUid).child("profile").getValue().toString());
                         userProfile.setImageResource(imageId);
 
-                        displayingVocabulary(part);
+                       displayingVocabulary(part);
                     }
 
 

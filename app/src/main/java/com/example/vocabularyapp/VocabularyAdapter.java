@@ -16,6 +16,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class VocabularyAdapter extends FirebaseRecyclerAdapter<Vocabulary, VocabularyAdapter.VocabularyHolder> {
     public Context context;
+    private int noFWords = 0;
 
     public VocabularyAdapter(@NonNull FirebaseRecyclerOptions<Vocabulary> options, Context context) {
         super(options);
@@ -29,17 +30,21 @@ public class VocabularyAdapter extends FirebaseRecyclerAdapter<Vocabulary, Vocab
 
         final String postKey = getRef(position).getKey();
 
+        noFWords = position;
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SendUserToClickVocabularyActivity(postKey);
+                SendUserToClickVocabularyActivity(postKey, noFWords);
             }
         });
+
     }
 
-    private void SendUserToClickVocabularyActivity(String postKey) {
+    private void SendUserToClickVocabularyActivity(String postKey,int words) {
         Intent intent = new Intent(context, ClickVocabularyActivity.class);
         intent.putExtra("postkey", postKey);
+        intent.putExtra("noFWords",String.valueOf(words));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
         context.startActivity(intent);
 

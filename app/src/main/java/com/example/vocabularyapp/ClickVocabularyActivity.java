@@ -8,10 +8,12 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +36,12 @@ public class ClickVocabularyActivity extends AppCompatActivity {
     private String currentUid, audioUrl;
 
     private TextView userName, bookName, meaningValue, bookExample;
-    private Button wordValue;
+    private Button wordValue,backBtn,nextBtn;
     private ImageView userProfile;
-    private int count,wordPosition = 0;
+    private int count, wordPosition = 0;
+
+    private TextView[] mDots;
+    private LinearLayout mDotsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +50,17 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
         getIntent = getIntent();
         wordRefKey = getIntent.getStringExtra("postkey");
+        String countString = getIntent.getStringExtra("noFWords");
 
-        wordPosition = Integer.parseInt(wordRefKey);
+        count = Integer.parseInt(countString);
+        wordPosition = Integer.parseInt(wordRefKey) % 6;
+        if (wordPosition == 0) {
+            wordPosition = 6;
+        }
 
-        count = getCount();
 
         mAuth = FirebaseAuth.getInstance();
         currentUid = mAuth.getUid();
-
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
         userName = findViewById(R.id.click_vocabulary_username);
         bookName = findViewById(R.id.click_vocabulary_book_name);
@@ -60,7 +68,11 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         meaningValue = findViewById(R.id.click_vocabulary_meaning);
         bookExample = findViewById(R.id.click_vocabulary_book_example);
         userProfile = findViewById(R.id.click_vocabulary_profile);
+        mDotsLayout = findViewById(R.id.dotsLayout);
+        backBtn = findViewById(R.id.click_vocabulary_back_button);
+        nextBtn = findViewById(R.id.click_vocabulary_next_button);
 
+        settingUserInfoAndWord();
 
         wordValue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +85,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mp) {
-                           mp.start();
+                            mp.start();
                         }
                     });
                     mediaPlayer.prepare();
@@ -85,26 +97,55 @@ public class ClickVocabularyActivity extends AppCompatActivity {
             }
         });
 
+        addDotsIndicator(count + 1, wordPosition - 1);
 
-
-
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        settingUserInfoAndWord();
-    }
-
-    private int getCount() {
-        int position = wordPosition;
-        int i = 0;
-        while (position%5 != 0){
-            i++;
-            position++;
+        if((count+1)-wordPosition == count ){
+            backBtn.setVisibility(View.INVISIBLE);
         }
-        return i;
+        if(wordPosition == count+1){
+            nextBtn.setText("Finish");
+        }
+
+            backBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    nextBtn.setText("Next");
+
+                    if(wordPosition == 2){
+                        backBtn.setVisibility(View.INVISIBLE);
+                    }
+                    wordPosition = wordPosition - 1;
+                    wordRefKey = String.valueOf(wordPosition);
+                    settingUpWord(wordRefKey);
+                    addDotsIndicator(count + 1, wordPosition - 1);
+                }
+            });
+
+           nextBtn.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   if(wordPosition < count+1){
+                       if(wordPosition == count){
+                           nextBtn.setText("Finish");
+                       }
+                       wordPosition = wordPosition + 1;
+
+                       if(wordPosition != 1){
+                           backBtn.setVisibility(View.VISIBLE);
+                       }
+
+                       wordRefKey = String.valueOf(wordPosition);
+                       settingUpWord(wordRefKey);
+                       addDotsIndicator(count + 1, wordPosition - 1);
+                   }
+                   else{
+
+                   }
+
+               }
+           });
+
     }
 
     private void settingUpWord(String wordRefKey) {
@@ -117,10 +158,10 @@ public class ClickVocabularyActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                 String   wordString = dataSnapshot.child("word").getValue().toString();
+                    String wordString = dataSnapshot.child("word").getValue().toString();
                     String meaning = dataSnapshot.child("meaning").getValue().toString();
                     String example = dataSnapshot.child("example").getValue().toString();
-                    audioUrl   = dataSnapshot.child("audio").getValue(String.class);
+                    audioUrl = dataSnapshot.child("audio").getValue(String.class);
 
                     wordValue.setText(wordString);
                     meaningValue.setText(meaning);
@@ -160,6 +201,23 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void addDotsIndicator(int count, int position) {
+
+        mDots = new TextView[count];
+        mDotsLayout.removeAllViews();
+
+        for (int i = 0; i < count; i++) {
+            mDots[i] = new TextView(this);
+            mDots[i].setText(Html.fromHtml("&#8226;"));
+            mDots[i].setTextSize(35);
+            mDots[i].setTextColor(getResources().getColor(R.color.colorArrow));
+            mDotsLayout.addView(mDots[i]);
+        }
+
+        mDots[position].setTextColor(getResources().getColor(R.color.colorBlack));
+
     }
 
 

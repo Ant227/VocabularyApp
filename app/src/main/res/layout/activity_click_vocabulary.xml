@@ -24,7 +24,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:textSize="28dp" />
 
         <LinearLayout
@@ -87,7 +87,6 @@
         android:layout_marginTop="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         app:cardCornerRadius="30dp"
         app:cardBackgroundColor="@color/colorWhite"
         android:elevation="6dp">
@@ -102,34 +101,6 @@
                 android:layout_height="116dp"
                 android:orientation="horizontal">
 
-<!--                <LinearLayout-->
-<!--                    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="80dp"-->
-<!--                    android:layout_marginLeft="16dp"-->
-<!--                    android:layout_gravity="center_vertical"-->
-<!--                    android:padding="16dp"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:elevation="3dp"-->
-<!--                    android:background="@drawable/word_layout_background">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/click_vocabulary_vocabulary"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:drawablePadding="8dp"-->
-<!--                        android:layout_marginLeft="8dp"-->
-<!--                        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"-->
-<!--                        android:gravity="center_vertical"-->
-<!--                        android:text="Vocabulary"-->
-<!--                        android:drawableLeft="@drawable/sound"-->
-<!--                        android:textColor="@color/colorBlack"-->
-<!--                        android:textSize="18dp" />-->
-
-
-
-
-<!--                </LinearLayout>-->
                 <Button
                     android:id="@+id/click_vocabulary_vocabulary"
                     android:layout_width="wrap_content"
@@ -195,8 +166,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#EFEFEF"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"/>
 
@@ -225,7 +196,7 @@
                 android:paddingLeft="20sp"
                 android:paddingRight="4dp"
                 android:paddingBottom="8dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="10dp"
 
                 />
         </LinearLayout>
@@ -234,11 +205,22 @@
     </androidx.cardview.widget.CardView>
 
 
+
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/dotsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/click_vocabulary_button_layout"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"/>
+
+    <LinearLayout
+        android:id="@+id/click_vocabulary_button_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -248,27 +230,32 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/click_vocabulary_back_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:elevation="6dp"
             android:layout_below="@id/register_input_text_group"
             android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
-            android:text="Cancel"
-            android:textColor="@color/colorText" />
+            android:text="Back"
+            android:textColor="@color/colorText"
+            android:layout_margin="4dp"/>
 
         <Button
-
+            android:id="@+id/click_vocabulary_next_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:elevation="6dp"
             android:layout_below="@id/register_input_text_group"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:background="@drawable/main__activity_register_button"
             android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
             android:text="Next"
-            android:textColor="@color/colorText" />
+            android:textColor="@color/colorText"
+            android:layout_margin="4dp"/>
 
 
     </LinearLayout>
