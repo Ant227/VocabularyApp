@@ -58,7 +58,7 @@
                 />
 
             <TextView
-                android:id="@+id/click_vocabulary_word_count"
+                android:id="@+id/click_vocabulary_user_current_part"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"

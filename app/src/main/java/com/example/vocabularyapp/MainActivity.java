@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference userRef;
     private FirebaseRecyclerAdapter adapter;
 
-    private ImageView userProfile;
+    private ImageView userProfile , greaterThanLock;
     private TextView userName, bookName, wordCount;
     private TextView date, lessThan, dayCount, greaterThan;
 
@@ -51,8 +51,11 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
     private String currentDate, book_status;
     private RecyclerView.LayoutManager layoutManager;
-    private int part = 1;
+
     LinearLayout linearLayout;
+
+    int part, currentPart = 1;
+    int totalParts, userPart = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +63,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         userRef = FirebaseDatabase.getInstance().getReference().child("users");
         mAuth = FirebaseAuth.getInstance();
         userProfile = findViewById(R.id.main_user_profile);
         userName = findViewById(R.id.main_username);
         bookName = findViewById(R.id.main_book_name);
-        wordCount = findViewById(R.id.main_word_count);
+        wordCount = findViewById(R.id.main_part_count);
         date = findViewById(R.id.main_date);
         lessThan = findViewById(R.id.main_less_than);
         dayCount = findViewById(R.id.main_day);
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.main_recyclerview);
         linearLayout = findViewById(R.id.main_date_layout);
         linearLayout.setVisibility(View.INVISIBLE);
+        greaterThanLock = findViewById(R.id.main_greater_than_lock);
 
 
         settingUserInfo();
@@ -81,41 +84,13 @@ public class MainActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
         date.setText(currentDate);
-        dayCount.setText("Part " + part);
 
-
-
-        lessThan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (part > 1) {
-                    part--;
-                    dayCount.setText("Part " + part);
-                } else {
-                    Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
-                }
-
-                updateQuery((part * 6) - 5);
-            }
-        });
-
-        greaterThan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                part++;
-                dayCount.setText("Part " + part);
-                updateQuery((part * 6) - 5);
-                if (part > 4) {
-                    Toast.makeText(MainActivity.this, "No more data!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
     }
 
     private void updateQuery(int start) {
 
-        if(!TextUtils.isEmpty(book_status)){
+        if (!TextUtils.isEmpty(book_status)) {
             Query query = FirebaseDatabase.getInstance().getReference()
                     .child("books").child(book_status).child("words")
                     .orderByKey()
@@ -127,13 +102,14 @@ public class MainActivity extends AppCompatActivity {
                             .build();
 
             adapter.updateOptions(options);
+            adapter.startListening();
         }
 
     }
 
     private void displayingVocabulary(int start) {
 
-        if(book_status != null){
+        if (book_status != null) {
 
             Query query = FirebaseDatabase.getInstance().getReference()
                     .child("books").child(book_status).child("words")
@@ -145,10 +121,10 @@ public class MainActivity extends AppCompatActivity {
                             .setQuery(query, Vocabulary.class)
                             .build();
 
-            adapter = new VocabularyAdapter(options, getApplicationContext());
+            adapter = new VocabularyAdapter(options, getApplicationContext(), book_status);
 
             recyclerView.setHasFixedSize(true);
-            layoutManager = new GridLayoutManager(MainActivity.this,2);
+            layoutManager = new GridLayoutManager(MainActivity.this, 2);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
 
@@ -157,11 +133,9 @@ public class MainActivity extends AppCompatActivity {
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists()) {
                         linearLayout.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
+                    } else {
                         linearLayout.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -197,10 +171,9 @@ public class MainActivity extends AppCompatActivity {
                         int imageId = Integer.valueOf(dataSnapshot.child(currentUid).child("profile").getValue().toString());
                         userProfile.setImageResource(imageId);
 
-                       displayingVocabulary(part);
+                        displayPart();
+
                     }
-
-
                 }
             }
 
@@ -209,6 +182,105 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void displayPart() {
+
+
+        DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(book_status);
+        bookRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String totalWordsString = dataSnapshot.child("wordcount").getValue().toString();
+                int totalWords = Integer.parseInt(totalWordsString);
+
+                if (totalWords % 6 != 0) {
+                    totalParts = totalWords / 6 + 1;
+                } else {
+                    totalParts = totalWords / 6;
+                }
+
+                userRef.child(mAuth.getUid()).child("words").child(book_status).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int totalWords = (int) dataSnapshot.getChildrenCount();
+
+                        userPart = totalWords / 6 + 1;
+                        wordCount.setText("Current Part : "+ userPart);
+                        dayCount.setText("Part " + userPart);
+
+                        if (userPart == 1) {
+                            displayingVocabulary(userPart);
+                        } else {
+                            displayingVocabulary((userPart * 6) - 5);
+                        }
+
+                        currentPart = userPart;
+
+                        lessThan.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (currentPart > 1) {
+                                    currentPart--;
+                                    dayCount.setText("Part " + currentPart);
+                                    updateQuery((currentPart * 6) - 5);
+                                } else {
+                                    Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
+                                }
+
+                                if(currentPart <= userPart-1){
+                                    greaterThanLock.setVisibility(View.GONE);
+                                }
+
+                            }
+                        });
+
+                        greaterThan.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (currentPart != totalParts) {
+                                    if(currentPart < userPart){
+                                        currentPart++;
+                                        dayCount.setText("Part " + currentPart);
+                                        updateQuery((currentPart * 6) - 5);
+                                    }
+                                    else{
+                                        Toast.makeText(MainActivity.this, "Please learn the current part to unlock!!", Toast.LENGTH_SHORT).show();
+                                    }
+
+
+                                } else {
+                                    Toast.makeText(MainActivity.this, "This is the last page.", Toast.LENGTH_SHORT).show();
+                                }
+                                if(currentPart <= userPart-1){
+                                    greaterThanLock.setVisibility(View.GONE);
+                                }
+                                else{
+                                    greaterThanLock.setVisibility(View.VISIBLE);
+                                }
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 
@@ -228,10 +300,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
     private void checkSelectedBook() {
         userRef.child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {

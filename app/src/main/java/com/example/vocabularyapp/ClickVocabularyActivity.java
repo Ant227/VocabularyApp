@@ -17,14 +17,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ClickVocabularyActivity extends AppCompatActivity {
 
@@ -35,7 +37,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
     private String wordRefKey, bookNameString;
     private String currentUid, audioUrl;
 
-    private TextView userName, bookName, meaningValue, bookExample;
+    private TextView userName, bookName, meaningValue, bookExample, userCurrentPart;
     private Button wordValue,backBtn,nextBtn;
     private ImageView userProfile;
     private int count, wordPosition = 0;
@@ -53,6 +55,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         String countString = getIntent.getStringExtra("noFWords");
 
         count = Integer.parseInt(countString);
+
         wordPosition = Integer.parseInt(wordRefKey) % 6;
         if (wordPosition == 0) {
             wordPosition = 6;
@@ -71,6 +74,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         mDotsLayout = findViewById(R.id.dotsLayout);
         backBtn = findViewById(R.id.click_vocabulary_back_button);
         nextBtn = findViewById(R.id.click_vocabulary_next_button);
+        userCurrentPart = findViewById(R.id.click_vocabulary_user_current_part);
 
         settingUserInfoAndWord();
 
@@ -116,7 +120,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                         backBtn.setVisibility(View.INVISIBLE);
                     }
                     wordPosition = wordPosition - 1;
-                    wordRefKey = String.valueOf(wordPosition);
+                    wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) - 1) ;
                     settingUpWord(wordRefKey);
                     addDotsIndicator(count + 1, wordPosition - 1);
                 }
@@ -125,23 +129,20 @@ public class ClickVocabularyActivity extends AppCompatActivity {
            nextBtn.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-                   if(wordPosition < count+1){
-                       if(wordPosition == count){
-                           nextBtn.setText("Finish");
+                       if(wordPosition < count+1){
+                           if(wordPosition == count){
+                               nextBtn.setText("Finish");
+                           }
+                           wordPosition = wordPosition + 1;
+
+                           if(wordPosition != 1){
+                               backBtn.setVisibility(View.VISIBLE);
+                           }
+
+                           wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) + 1) ;
+                           settingUpWord(wordRefKey);
+                           addDotsIndicator(count + 1, wordPosition - 1);
                        }
-                       wordPosition = wordPosition + 1;
-
-                       if(wordPosition != 1){
-                           backBtn.setVisibility(View.VISIBLE);
-                       }
-
-                       wordRefKey = String.valueOf(wordPosition);
-                       settingUpWord(wordRefKey);
-                       addDotsIndicator(count + 1, wordPosition - 1);
-                   }
-                   else{
-
-                   }
 
                }
            });
@@ -166,6 +167,8 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                     wordValue.setText(wordString);
                     meaningValue.setText(meaning);
                     bookExample.setText(example);
+
+                    savingWords(wordString);
                 }
             }
 
@@ -174,6 +177,58 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
             }
         });
+
+
+    }
+
+    private void savingWords(final String word) {
+        final HashMap<String, Object> userLearnedWord = new HashMap<>();
+
+        userLearnedWord.put("word", word);
+
+        userRef.child("words").child(bookNameString).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.child(wordRefKey).exists()){
+
+                    nextBtn.setEnabled(false);
+                    nextBtn.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            nextBtn.setEnabled(true);
+                       }
+                    }, 5000);
+
+
+
+                    userRef.child("words").child(bookNameString).child(wordRefKey).updateChildren(userLearnedWord)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(ClickVocabularyActivity.this,
+                                                "mark ' "+word+" ' as learnt, so please don't quit the before you have learnt this word",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    else{
+                                        Toast.makeText(ClickVocabularyActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+                else{
+                    Toast.makeText(ClickVocabularyActivity.this, "already learnt", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
 
     }
@@ -192,6 +247,23 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                     int imageId = Integer.valueOf(dataSnapshot.child("profile").getValue().toString());
                     userProfile.setImageResource(imageId);
                     settingUpWord(wordRefKey);
+
+
+                    userRef.child("words").child(bookNameString).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int totalWords = (int) dataSnapshot.getChildrenCount();
+
+                            int userPart = totalWords / 6 + 1;
+                            userCurrentPart.setText("Current Part : "+ userPart);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
 
             }

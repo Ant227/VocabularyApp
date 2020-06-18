@@ -2,6 +2,10 @@ package com.example.vocabularyapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.VpnService;
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +17,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VocabularyAdapter extends FirebaseRecyclerAdapter<Vocabulary, VocabularyAdapter.VocabularyHolder> {
-    public Context context;
+    private Context context;
+    private String bookName;
     private int noFWords = 0;
 
-    public VocabularyAdapter(@NonNull FirebaseRecyclerOptions<Vocabulary> options, Context context) {
+
+
+
+    public VocabularyAdapter(@NonNull FirebaseRecyclerOptions<Vocabulary> options, Context context,String bookName) {
         super(options);
         this.context = context;
+        this.bookName = bookName;
     }
 
     @Override
@@ -30,15 +48,44 @@ public class VocabularyAdapter extends FirebaseRecyclerAdapter<Vocabulary, Vocab
 
         final String postKey = getRef(position).getKey();
 
+
         noFWords = position;
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 SendUserToClickVocabularyActivity(postKey, noFWords);
             }
         });
 
+
+
+    }
+
+
+
+    private void checkingLearnedWords(final String postKey) {
+
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+       String currentUid = mAuth.getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
+
+        userRef.child("words").child(bookName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(postKey).exists()){
+                    String userWord = dataSnapshot.child(postKey).child("word").getValue().toString();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void SendUserToClickVocabularyActivity(String postKey,int words) {
