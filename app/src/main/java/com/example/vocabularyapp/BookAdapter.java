@@ -67,7 +67,7 @@ public class BookAdapter extends FirebaseRecyclerAdapter<Book, BookAdapter.BookV
             bookPic = itemView.findViewById(R.id.all_book_layout_book_pic);
             bookName = itemView.findViewById(R.id.all_book_layout_book_name);
             wordCount = itemView.findViewById(R.id.all_book_layout_word_count);
-            dayCount = itemView.findViewById(R.id.all_book_layout_day_count);
+
 
         }
 

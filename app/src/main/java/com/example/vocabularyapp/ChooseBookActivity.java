@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -41,9 +42,11 @@ public class ChooseBookActivity extends AppCompatActivity {
     private RelativeLayout selectedBookLayout,recyclerLayout;
 
     private ImageView selectedBookPic;
-    private TextView selectedBookName, selectedBookWordCount, selectedBookDayCount;
+    private TextView selectedBookName, selectedBookWordCount;
 
     private String Book_Name;
+
+    private ProgressBar circularProgressBar;
 
 
     @Override
@@ -60,7 +63,7 @@ public class ChooseBookActivity extends AppCompatActivity {
          selectedBookPic = findViewById(R.id.choose_book_pic);
          selectedBookName = findViewById(R.id.choose_book_name);
          selectedBookWordCount = findViewById(R.id.choose_book_word_count);
-         selectedBookDayCount = findViewById(R.id.choose_book_day_count);
+         circularProgressBar = findViewById(R.id.progress_circle);
 
 
          query = FirebaseDatabase.getInstance()
@@ -87,7 +90,7 @@ public class ChooseBookActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull BookViewHolder holder, int position, @NonNull final Book model) {
                 holder.bookName.setText(model.getBookname());
                 holder.wordCount.setText(model.getWordcount()+ " words");
-                holder.dayCount.setText(model.getDaycount()+" days");
+                holder.author.setText("by "+model.getAuthor());
 
                 Picasso.get().load(model.bookpic).placeholder(R.drawable.app_logo)
                         .fit()
@@ -103,16 +106,20 @@ public class ChooseBookActivity extends AppCompatActivity {
                         Book_Name = model.getBookname();
                         selectedBookName.setText(Book_Name);
                         selectedBookWordCount.setText(model.getWordcount()+ " words");
-                        selectedBookDayCount.setText(model.getDaycount()+" days");
+
 
                         Picasso.get().load(model.bookpic).placeholder(R.drawable.app_logo)
                                 .fit()
                                 .centerCrop()
                                 .into(selectedBookPic);
+
+
                     }
                 });
-
+                circularProgressBar.setVisibility(View.INVISIBLE);
             }
+
+
         };
 
 
@@ -185,7 +192,7 @@ public class ChooseBookActivity extends AppCompatActivity {
 
     public class BookViewHolder extends RecyclerView.ViewHolder{
         public ImageView bookPic;
-        public TextView bookName, wordCount, dayCount;
+        public TextView bookName, wordCount, author;
 
 
         public BookViewHolder(@NonNull View itemView) {
@@ -194,7 +201,7 @@ public class ChooseBookActivity extends AppCompatActivity {
             bookPic = itemView.findViewById(R.id.all_book_layout_book_pic);
             bookName = itemView.findViewById(R.id.all_book_layout_book_name);
            wordCount = itemView.findViewById(R.id.all_book_layout_word_count);
-            dayCount = itemView.findViewById(R.id.all_book_layout_day_count);
+            author = itemView.findViewById(R.id.all_book_layout_author);
 
         }
     }

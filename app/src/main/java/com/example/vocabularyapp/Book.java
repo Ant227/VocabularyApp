@@ -1,7 +1,7 @@
 package com.example.vocabularyapp;
 
 public class Book {
-    public String bookname, wordcount,daycount, bookpic;
+    public String bookname, wordcount,author, bookpic;
 
     public Book(){
         //needed
@@ -10,7 +10,7 @@ public class Book {
     public Book(String bookname, String wordcount, String daycount, String bookpic) {
         this.bookname = bookname;
         this.wordcount = wordcount;
-        this.daycount = daycount;
+        this.author = daycount;
         this.bookpic = bookpic;
 
 
@@ -26,12 +26,10 @@ public class Book {
         this.wordcount = wordcount;
     }
 
-    public String getDaycount() {
-        return daycount;
-    }
+    public String getAuthor() { return author; }
 
-    public void setDaycount(String daycount) {
-        this.daycount = daycount;
+    public void setAuthor(String daycount) {
+        this.author = daycount;
     }
 
     public String getBookname() {

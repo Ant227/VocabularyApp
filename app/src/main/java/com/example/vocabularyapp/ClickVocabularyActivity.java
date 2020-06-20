@@ -4,16 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,9 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
     private TextView[] mDots;
     private LinearLayout mDotsLayout;
+
+    private CountDownTimer countDownTimer;
+    private long time = 8000; // 8 seconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,11 +147,58 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                            wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) + 1) ;
                            settingUpWord(wordRefKey);
                            addDotsIndicator(count + 1, wordPosition - 1);
+                       }else{
+
+                           userRef.child("words").child(bookNameString).addListenerForSingleValueEvent(new ValueEventListener() {
+                               @Override
+                               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                   int totalWords = (int) dataSnapshot.getChildrenCount();
+
+
+                                   if(totalWords % 6 == 0){
+                                       View view=getLayoutInflater().inflate(R.layout.congratulation_layout,null,false);
+                                       PopupWindow popupWindow=new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+                                       popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
+
+                                       Button sendToMain = view.findViewById(R.id.congratulation_btn);
+                                       TextView congratText = view.findViewById(R.id.congratulation_text);
+
+                                       int userPart = totalWords / 6 ;
+                                       congratText.setText("Yay!\nYou have learnt the Part " + String.valueOf(userPart)+ " !!!");
+                                       sendToMain.setText("Go to Part "+ (userPart+1));
+
+
+                                       sendToMain.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               sendUserToMainActivity();
+                                           }
+                                       });
+                                   }
+                                   else{
+                                       sendUserToMainActivity();
+                                   }
+
+                               }
+
+                               @Override
+                               public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                               }
+                           });
+
                        }
 
                }
            });
 
+    }
+    private void sendUserToMainActivity()
+    {
+        Intent intentMain = new Intent(ClickVocabularyActivity.this, MainActivity.class);
+        intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intentMain);
+        finish();
     }
 
     private void settingUpWord(String wordRefKey) {
@@ -192,15 +244,9 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                 if(!dataSnapshot.child(wordRefKey).exists()){
 
                     nextBtn.setEnabled(false);
-                    nextBtn.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            nextBtn.setEnabled(true);
-                       }
-                    }, 5000);
+                    startTimer();
 
-
-
+//
                     userRef.child("words").child(bookNameString).child(wordRefKey).updateChildren(userLearnedWord)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -211,14 +257,12 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                                                 Toast.LENGTH_LONG).show();
                                     }
                                     else{
-                                        Toast.makeText(ClickVocabularyActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ClickVocabularyActivity.this, "Failed to mark as learnt word", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                 }
-                else{
-                    Toast.makeText(ClickVocabularyActivity.this, "already learnt", Toast.LENGTH_SHORT).show();
-                }
+
             }
 
             @Override
@@ -231,6 +275,30 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void startTimer()
+    {
+        countDownTimer = new CountDownTimer(time,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                time = millisUntilFinished;
+                String timeString = String.valueOf(time / 1000);
+                nextBtn.setText("enable after "+timeString+"s");
+            }
+
+            @Override
+            public void onFinish() {
+
+                if(wordPosition == count + 1){
+                    nextBtn.setText("FINISH");
+                }else{
+                    nextBtn.setText("NEXT");
+                }
+                nextBtn.setEnabled(true);
+                time = 8000;
+            }
+        }.start();
     }
 
     private void settingUserInfoAndWord() {

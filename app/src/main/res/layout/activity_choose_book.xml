@@ -29,7 +29,8 @@
         android:text="Remind me"
         android:textColor="@color/colorText"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp" />
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
     
     <Button
         android:layout_width="match_parent"
@@ -39,7 +40,8 @@
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:textColor="@color/colorBlack"
-        android:background="@drawable/register_text_input"/>
+        android:background="@drawable/register_text_input"
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -69,7 +71,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-
             android:visibility="gone"
             android:id="@+id/choose_book_selected_book_relativeLayout"
             android:layout_width="match_parent"
@@ -99,7 +100,8 @@
                         android:textAlignment="center"
                         android:textColor="@color/colorText"
                         android:textSize="12sp"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
 
                     <ImageView
                         android:id="@+id/choose_book_pic"
@@ -124,7 +126,8 @@
                             android:textStyle="bold"
                             android:layout_weight="1"
                             android:textAlignment="center"
-                            android:textColor="@color/colorText"/>
+                            android:textColor="@color/colorText"
+                            android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
                         <TextView
                             android:id="@+id/choose_book_word_count"
                             android:layout_width="match_parent"
@@ -135,18 +138,9 @@
                             android:textStyle="bold"
                             android:layout_weight="1"
                             android:textAlignment="center"
-                            android:textColor="@color/colorText"/>
-                        <TextView
-                            android:id="@+id/choose_book_day_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="15sp"
-                            android:padding="8dp"
-                            android:text="40 days"
-                            android:textStyle="bold"
-                            android:layout_weight="1"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorText"/>
+                            android:textColor="@color/colorText"
+                            android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
+
 
                     </LinearLayout>
 
@@ -169,7 +163,8 @@
                 android:layout_height="40dp"
                 android:text="Finish"
                 android:background="@drawable/main__activity_register_button"
-                android:textColor="@color/colorText"/>
+                android:textColor="@color/colorText"
+                android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
 
         </RelativeLayout>
 

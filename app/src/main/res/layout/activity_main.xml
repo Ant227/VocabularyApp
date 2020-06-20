@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
                 android:padding="1dp"
-                android:text="0/0"
+                android:text="current part : 7"
                 android:textColor="@color/colorText"
                 android:textSize="12sp"
 
@@ -119,7 +119,8 @@
                 android:gravity="center"
                 android:text="\u003C"
                 android:textColor="@color/colorArrow"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
 
             <RelativeLayout
                 android:layout_width="1dp"
@@ -157,7 +158,8 @@
                     android:gravity="center"
                     android:text="\u003E"
                     android:textColor="@color/colorArrow"
-                    android:textSize="28sp" />
+                    android:textSize="28sp"
+                    android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
 
                 <ImageView
                     android:id="@+id/main_greater_than_lock"
@@ -202,7 +204,7 @@
         android:orientation="horizontal">
 
         <Button
-
+            android:id="@+id/main_read"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_below="@id/register_input_text_group"
@@ -212,7 +214,7 @@
             android:background="@drawable/main__activity_register_button"
             android:elevation="6dp"
             android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
-            android:text="QUIZ!!"
+            android:text="Read Novel"
             android:textColor="@color/colorText" />
 
         <Button

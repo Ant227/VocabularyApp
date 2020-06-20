@@ -10,15 +10,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,11 +62,12 @@ public class MainActivity extends AppCompatActivity {
     int part, currentPart = 1;
     int totalParts, userPart = 0;
 
+    private Button readPDF;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         userRef = FirebaseDatabase.getInstance().getReference().child("users");
         mAuth = FirebaseAuth.getInstance();
@@ -77,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.main_date_layout);
         linearLayout.setVisibility(View.INVISIBLE);
         greaterThanLock = findViewById(R.id.main_greater_than_lock);
+        readPDF = findViewById(R.id.main_read);
 
 
         settingUserInfo();
@@ -170,8 +177,11 @@ public class MainActivity extends AppCompatActivity {
 
                         int imageId = Integer.valueOf(dataSnapshot.child(currentUid).child("profile").getValue().toString());
                         userProfile.setImageResource(imageId);
-
                         displayPart();
+
+
+
+
 
                     }
                 }
@@ -184,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void displayPart() {
 
 
@@ -191,85 +203,102 @@ public class MainActivity extends AppCompatActivity {
         bookRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String totalWordsString = dataSnapshot.child("wordcount").getValue().toString();
-                int totalWords = Integer.parseInt(totalWordsString);
+                if(dataSnapshot.exists()){
+                    String totalWordsString = dataSnapshot.child("wordcount").getValue().toString();
+                    final String pdfUrl = dataSnapshot.child("pdf").getValue().toString();
 
-                if (totalWords % 6 != 0) {
-                    totalParts = totalWords / 6 + 1;
-                } else {
-                    totalParts = totalWords / 6;
-                }
+                    readPDF.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           
 
-                userRef.child(mAuth.getUid()).child("words").child(book_status).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        int totalWords = (int) dataSnapshot.getChildrenCount();
-
-                        userPart = totalWords / 6 + 1;
-                        wordCount.setText("Current Part : "+ userPart);
-                        dayCount.setText("Part " + userPart);
-
-                        if (userPart == 1) {
-                            displayingVocabulary(userPart);
-                        } else {
-                            displayingVocabulary((userPart * 6) - 5);
-                        }
-
-                        currentPart = userPart;
-
-                        lessThan.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (currentPart > 1) {
-                                    currentPart--;
-                                    dayCount.setText("Part " + currentPart);
-                                    updateQuery((currentPart * 6) - 5);
-                                } else {
-                                    Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
-                                }
-
-                                if(currentPart <= userPart-1){
-                                    greaterThanLock.setVisibility(View.GONE);
-                                }
-
+                            if(!TextUtils.isEmpty(pdfUrl)){
+                                sendUserToReadBookActivity(pdfUrl);
                             }
-                        });
+                            
+                        }
+                    });
 
-                        greaterThan.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (currentPart != totalParts) {
-                                    if(currentPart < userPart){
-                                        currentPart++;
+                    int totalWords = Integer.parseInt(totalWordsString);
+
+                    if (totalWords % 6 != 0) {
+                        totalParts = totalWords / 6 + 1;
+                    } else {
+                        totalParts = totalWords / 6;
+                    }
+
+                    userRef.child(mAuth.getUid()).child("words").child(book_status).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int totalWords = (int) dataSnapshot.getChildrenCount();
+
+                            userPart = totalWords / 6 + 1;
+                            wordCount.setText("Current Part : "+ userPart);
+                            dayCount.setText("Part " + userPart);
+
+                            if (userPart == 1) {
+                                displayingVocabulary(userPart);
+                            } else {
+                                displayingVocabulary((userPart * 6) - 5);
+                            }
+
+                            currentPart = userPart;
+
+                            lessThan.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (currentPart > 1) {
+                                        currentPart--;
                                         dayCount.setText("Part " + currentPart);
                                         updateQuery((currentPart * 6) - 5);
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "This is the first page", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    if(currentPart <= userPart-1){
+                                        greaterThanLock.setVisibility(View.GONE);
+                                    }
+
+                                }
+                            });
+
+                            greaterThan.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (currentPart != totalParts) {
+                                        if(currentPart < userPart){
+                                            currentPart++;
+                                            dayCount.setText("Part " + currentPart);
+                                            updateQuery((currentPart * 6) - 5);
+                                        }
+                                        else{
+                                            Toast.makeText(MainActivity.this, "Please learn the current part to unlock!!", Toast.LENGTH_SHORT).show();
+                                        }
+
+
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "This is the last page.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    if(currentPart <= userPart-1){
+                                        greaterThanLock.setVisibility(View.GONE);
                                     }
                                     else{
-                                        Toast.makeText(MainActivity.this, "Please learn the current part to unlock!!", Toast.LENGTH_SHORT).show();
+                                        greaterThanLock.setVisibility(View.VISIBLE);
                                     }
 
-
-                                } else {
-                                    Toast.makeText(MainActivity.this, "This is the last page.", Toast.LENGTH_SHORT).show();
                                 }
-                                if(currentPart <= userPart-1){
-                                    greaterThanLock.setVisibility(View.GONE);
-                                }
-                                else{
-                                    greaterThanLock.setVisibility(View.VISIBLE);
-                                }
-
-                            }
-                        });
+                            });
 
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+
+                }
 
 
 
@@ -340,6 +369,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
 
+    }
+
+    private void sendUserToReadBookActivity(String pdfUrl) {
+        Intent intent = new Intent(MainActivity.this, ReadBookActivity.class);
+        intent.putExtra("pdf",pdfUrl);
+        startActivity(intent);
     }
 
 }

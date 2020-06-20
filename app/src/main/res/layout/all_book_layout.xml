@@ -42,7 +42,19 @@
                   android:text="Book Name"
                   android:textStyle="bold"
                   android:layout_weight="1"
-                  android:textColor="@color/colorText"/>
+                  android:textColor="@color/colorText"
+                  android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
+                <TextView
+                    android:id="@+id/all_book_layout_author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:padding="8dp"
+                    android:text="by someone"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorText"
+                    android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
                 <TextView
                     android:id="@+id/all_book_layout_word_count"
                     android:layout_width="match_parent"
@@ -52,17 +64,9 @@
                     android:text="200 words"
                     android:textStyle="bold"
                     android:layout_weight="1"
-                    android:textColor="@color/colorText"/>
-                <TextView
-                    android:id="@+id/all_book_layout_day_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:padding="8dp"
-                    android:text="40 days"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorText"/>
+                    android:textColor="@color/colorText"
+                    android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
+
 
             </LinearLayout>
 
