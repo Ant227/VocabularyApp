@@ -12,8 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ReadBookActivity"
-            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ReviewActivity"></activity>
+        <activity
+            android:name=".ReadBookActivity"
+            android:configChanges="orientation|screenSize" />
         <activity android:name=".ClickVocabularyActivity" />
         <activity android:name=".ChooseBookActivity" />
         <activity android:name=".AppIntroActivity" />

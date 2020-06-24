@@ -26,8 +26,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp"
-            android:onClick="logout"
-            android:scaleType="fitXY"
+            android:scaleType="centerInside"
+            android:src="@drawable/emoji1"
             android:textSize="28dp" />
 
         <LinearLayout
@@ -76,11 +76,13 @@
 
         <ImageView
             android:id="@+id/main_setting"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
             android:layout_gravity="center"
             android:layout_marginLeft="50dp"
-            android:src="@drawable/setting_icon" />
+            android:src="@drawable/settings"
+            android:onClick="settings"/>
 
     </LinearLayout>
 
@@ -211,7 +213,7 @@
             android:layout_margin="4dp"
             android:layout_marginRight="8dp"
             android:layout_weight="1"
-            android:background="@drawable/main__activity_register_button"
+            android:background="@drawable/main_activity_register_button"
             android:elevation="6dp"
             android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
             android:text="Read Novel"
@@ -224,7 +226,7 @@
             android:layout_below="@id/register_input_text_group"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
-            android:background="@drawable/main__activity_register_button"
+            android:background="@drawable/main_activity_register_button"
             android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
             android:text="REVIEW"
             android:textColor="@color/colorText"

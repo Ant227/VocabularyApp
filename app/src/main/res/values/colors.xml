@@ -12,4 +12,6 @@
     <color name="colorBackground">#EFEFEF</color>
     <color name="colorYellow">#F6FF00</color>
     <color name="colotTransprantWhite">#cccccc</color>
+    <color name="colorGold">#FFD700</color>
+    <color name="colorRed">#B2003C</color>
 </resources>

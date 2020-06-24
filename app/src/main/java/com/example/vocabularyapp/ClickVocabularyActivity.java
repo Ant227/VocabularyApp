@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -27,8 +28,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.io.IOException;
 import java.util.HashMap;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.emitters.Emitter;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 public class ClickVocabularyActivity extends AppCompatActivity {
 
@@ -40,7 +47,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
     private String currentUid, audioUrl;
 
     private TextView userName, bookName, meaningValue, bookExample, userCurrentPart;
-    private Button wordValue,backBtn,nextBtn;
+    private Button wordValue, backBtn, nextBtn;
     private ImageView userProfile;
     private int count, wordPosition = 0;
 
@@ -108,93 +115,107 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
         addDotsIndicator(count + 1, wordPosition - 1);
 
-        if((count+1)-wordPosition == count ){
+        if ((count + 1) - wordPosition == count) {
             backBtn.setVisibility(View.INVISIBLE);
         }
-        if(wordPosition == count+1){
+        if (wordPosition == count + 1) {
             nextBtn.setText("Finish");
         }
 
-            backBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                    nextBtn.setText("Next");
+                nextBtn.setText("Next");
 
-                    if(wordPosition == 2){
-                        backBtn.setVisibility(View.INVISIBLE);
+                if (wordPosition == 2) {
+                    backBtn.setVisibility(View.INVISIBLE);
+                }
+                wordPosition = wordPosition - 1;
+                wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) - 1);
+                settingUpWord(wordRefKey);
+                addDotsIndicator(count + 1, wordPosition - 1);
+            }
+        });
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (wordPosition < count + 1) {
+                    if (wordPosition == count) {
+                        nextBtn.setText("Finish");
                     }
-                    wordPosition = wordPosition - 1;
-                    wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) - 1) ;
+                    wordPosition = wordPosition + 1;
+
+                    if (wordPosition != 1) {
+                        backBtn.setVisibility(View.VISIBLE);
+                    }
+
+                    wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) + 1);
                     settingUpWord(wordRefKey);
                     addDotsIndicator(count + 1, wordPosition - 1);
+                } else {
+
+                    userRef.child("words").child(bookNameString)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int totalWords = (int) dataSnapshot.getChildrenCount();
+
+
+                            if (totalWords % 6 == 0) {
+                                View view = getLayoutInflater().inflate(R.layout.congratulation_layout, null, false);
+                                PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                                Button sendToMain = view.findViewById(R.id.congratulation_btn);
+                                TextView congratText = view.findViewById(R.id.congratulation_text);
+                                KonfettiView konfettiView = view.findViewById(R.id.viewKonfetti);
+
+
+                                konfettiView.build()
+                                        .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                        .setSpeed(4f, 7f)
+                                        .setFadeOutEnabled(true)
+                                        .setTimeToLive(2000L)
+                                        .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                                        .addSizes(new Size(12, 5))
+                                        .setPosition(-100f, konfettiView.getWidth() + 100f, -150f, -150f)
+                                        .streamFor(300, 5000L);
+
+
+
+                                int userPart = totalWords / 6;
+                                congratText.setText("Yay!\nYou have learnt the Part " + String.valueOf(userPart) + " !!!");
+                                sendToMain.setText("Go to Part " + (userPart + 1));
+
+
+                                sendToMain.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        sendUserToMainActivity();
+                                    }
+                                });
+                            } else {
+                                sendUserToMainActivity();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
-            });
 
-           nextBtn.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                       if(wordPosition < count+1){
-                           if(wordPosition == count){
-                               nextBtn.setText("Finish");
-                           }
-                           wordPosition = wordPosition + 1;
-
-                           if(wordPosition != 1){
-                               backBtn.setVisibility(View.VISIBLE);
-                           }
-
-                           wordRefKey = String.valueOf(Integer.parseInt(wordRefKey) + 1) ;
-                           settingUpWord(wordRefKey);
-                           addDotsIndicator(count + 1, wordPosition - 1);
-                       }else{
-
-                           userRef.child("words").child(bookNameString).addListenerForSingleValueEvent(new ValueEventListener() {
-                               @Override
-                               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                   int totalWords = (int) dataSnapshot.getChildrenCount();
-
-
-                                   if(totalWords % 6 == 0){
-                                       View view=getLayoutInflater().inflate(R.layout.congratulation_layout,null,false);
-                                       PopupWindow popupWindow=new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-                                       popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
-
-                                       Button sendToMain = view.findViewById(R.id.congratulation_btn);
-                                       TextView congratText = view.findViewById(R.id.congratulation_text);
-
-                                       int userPart = totalWords / 6 ;
-                                       congratText.setText("Yay!\nYou have learnt the Part " + String.valueOf(userPart)+ " !!!");
-                                       sendToMain.setText("Go to Part "+ (userPart+1));
-
-
-                                       sendToMain.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View v) {
-                                               sendUserToMainActivity();
-                                           }
-                                       });
-                                   }
-                                   else{
-                                       sendUserToMainActivity();
-                                   }
-
-                               }
-
-                               @Override
-                               public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                               }
-                           });
-
-                       }
-
-               }
-           });
+            }
+        });
 
     }
-    private void sendUserToMainActivity()
-    {
+
+    private void sendUserToMainActivity() {
         Intent intentMain = new Intent(ClickVocabularyActivity.this, MainActivity.class);
         intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
@@ -207,7 +228,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                 .child(bookNameString).child("words").child(wordRefKey);
 
 
-        wordRef.addValueEventListener(new ValueEventListener() {
+        wordRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -241,7 +262,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         userRef.child("words").child(bookNameString).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.child(wordRefKey).exists()){
+                if (!dataSnapshot.child(wordRefKey).exists()) {
 
                     nextBtn.setEnabled(false);
                     startTimer();
@@ -251,12 +272,11 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         Toast.makeText(ClickVocabularyActivity.this,
-                                                "mark ' "+word+" ' as learnt, so please don't quit the before you have learnt this word",
+                                                "mark ' " + word + " ' as learnt, so please don't quit the before you have learnt this word",
                                                 Toast.LENGTH_LONG).show();
-                                    }
-                                    else{
+                                    } else {
                                         Toast.makeText(ClickVocabularyActivity.this, "Failed to mark as learnt word", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -272,27 +292,23 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         });
 
 
-
-
-
     }
 
-    private void startTimer()
-    {
-        countDownTimer = new CountDownTimer(time,1000) {
+    private void startTimer() {
+        countDownTimer = new CountDownTimer(time, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 time = millisUntilFinished;
                 String timeString = String.valueOf(time / 1000);
-                nextBtn.setText("enable after "+timeString+"s");
+                nextBtn.setText("enable after " + timeString + "s");
             }
 
             @Override
             public void onFinish() {
 
-                if(wordPosition == count + 1){
+                if (wordPosition == count + 1) {
                     nextBtn.setText("FINISH");
-                }else{
+                } else {
                     nextBtn.setText("NEXT");
                 }
                 nextBtn.setEnabled(true);
@@ -303,7 +319,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
 
     private void settingUserInfoAndWord() {
 
-        userRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -323,7 +339,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
                             int totalWords = (int) dataSnapshot.getChildrenCount();
 
                             int userPart = totalWords / 6 + 1;
-                            userCurrentPart.setText("Current Part : "+ userPart);
+                            userCurrentPart.setText("Current Part : " + userPart);
 
                         }
 
@@ -359,6 +375,7 @@ public class ClickVocabularyActivity extends AppCompatActivity {
         mDots[position].setTextColor(getResources().getColor(R.color.colorBlack));
 
     }
+
 
 
 }

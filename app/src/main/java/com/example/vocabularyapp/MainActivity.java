@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
             adapter.startListening();
 
-            query.addValueEventListener(new ValueEventListener() {
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void settingUserInfo() {
 
-        userRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
                         int imageId = Integer.valueOf(dataSnapshot.child(currentUid).child("profile").getValue().toString());
                         userProfile.setImageResource(imageId);
+                        Toast.makeText(MainActivity.this, String.valueOf(imageId), Toast.LENGTH_SHORT).show();
                         displayPart();
 
 
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(book_status);
-        bookRef.addValueEventListener(new ValueEventListener() {
+        bookRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
@@ -227,7 +228,8 @@ public class MainActivity extends AppCompatActivity {
                         totalParts = totalWords / 6;
                     }
 
-                    userRef.child(mAuth.getUid()).child("words").child(book_status).addListenerForSingleValueEvent(new ValueEventListener() {
+                    userRef.child(mAuth.getUid()).child("words").child(book_status)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             int totalWords = (int) dataSnapshot.getChildrenCount();
@@ -331,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void checkSelectedBook() {
-        userRef.child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+        userRef.child(mAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -357,19 +359,12 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void logout(View view) {
-        mAuth.signOut();
-        SendUserToAppIntroActivity();
 
-    }
-
-    private void SendUserToAppIntroActivity() {
-        Intent intent = new Intent(MainActivity.this, AppIntroActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    public void settings(View view){
+        Intent intent = new Intent(MainActivity.this, ChooseBookActivity.class);
         startActivity(intent);
-        finish();
-
     }
+
 
     private void sendUserToReadBookActivity(String pdfUrl) {
         Intent intent = new Intent(MainActivity.this, ReadBookActivity.class);

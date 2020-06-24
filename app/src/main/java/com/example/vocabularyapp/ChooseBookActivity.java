@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +40,7 @@ public class ChooseBookActivity extends AppCompatActivity {
 
     private Button finishBtn;
 
-    private RelativeLayout selectedBookLayout,recyclerLayout;
+    private RelativeLayout selectedBookLayout, recyclerLayout;
 
     private ImageView selectedBookPic;
     private TextView selectedBookName, selectedBookWordCount;
@@ -48,6 +49,10 @@ public class ChooseBookActivity extends AppCompatActivity {
 
     private ProgressBar circularProgressBar;
 
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private DatabaseReference userRef;
+    private String currentUid;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +60,21 @@ public class ChooseBookActivity extends AppCompatActivity {
         setContentView(R.layout.activity_choose_book);
 
 
-
+        currentUid = mAuth.getUid();
 
         finishBtn = findViewById(R.id.choose_book_finishBtn);
-         selectedBookLayout = findViewById(R.id.choose_book_selected_book_relativeLayout);
-         recyclerLayout = findViewById(R.id.recycler_layout);
-         selectedBookPic = findViewById(R.id.choose_book_pic);
-         selectedBookName = findViewById(R.id.choose_book_name);
-         selectedBookWordCount = findViewById(R.id.choose_book_word_count);
-         circularProgressBar = findViewById(R.id.progress_circle);
+        selectedBookLayout = findViewById(R.id.choose_book_selected_book_relativeLayout);
+        recyclerLayout = findViewById(R.id.recycler_layout);
+        selectedBookPic = findViewById(R.id.choose_book_pic);
+        selectedBookName = findViewById(R.id.choose_book_name);
+        selectedBookWordCount = findViewById(R.id.choose_book_word_count);
+        circularProgressBar = findViewById(R.id.progress_circle);
+        userRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
+
+        setingUserInfo();
 
 
-         query = FirebaseDatabase.getInstance()
+        query = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("books");
 
@@ -76,12 +84,12 @@ public class ChooseBookActivity extends AppCompatActivity {
                         .setQuery(query, Book.class)
                         .build();
 
-        adapter = new FirebaseRecyclerAdapter<Book,BookViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Book, BookViewHolder>(options) {
 
             @NonNull
             @Override
             public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(ChooseBookActivity.this).inflate(R.layout.all_book_layout,parent,false);
+                View view = LayoutInflater.from(ChooseBookActivity.this).inflate(R.layout.all_book_layout, parent, false);
                 return new BookViewHolder(view);
 
             }
@@ -89,8 +97,8 @@ public class ChooseBookActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull BookViewHolder holder, int position, @NonNull final Book model) {
                 holder.bookName.setText(model.getBookname());
-                holder.wordCount.setText(model.getWordcount()+ " words");
-                holder.author.setText("by "+model.getAuthor());
+                holder.wordCount.setText(model.getWordcount() + " words");
+                holder.author.setText("by " + model.getAuthor());
 
                 Picasso.get().load(model.bookpic).placeholder(R.drawable.app_logo)
                         .fit()
@@ -105,7 +113,7 @@ public class ChooseBookActivity extends AppCompatActivity {
 
                         Book_Name = model.getBookname();
                         selectedBookName.setText(Book_Name);
-                        selectedBookWordCount.setText(model.getWordcount()+ " words");
+                        selectedBookWordCount.setText(model.getWordcount() + " words");
 
 
                         Picasso.get().load(model.bookpic).placeholder(R.drawable.app_logo)
@@ -123,8 +131,7 @@ public class ChooseBookActivity extends AppCompatActivity {
         };
 
 
-
-        recyclerView =  findViewById(R.id.choose_book_recyclerview);
+        recyclerView = findViewById(R.id.choose_book_recyclerview);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChooseBookActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -142,25 +149,24 @@ public class ChooseBookActivity extends AppCompatActivity {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!selectedBookName.equals("Book Name")){
+                if (!selectedBookName.equals("Book Name")) {
 
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     String currentUid = mAuth.getUid();
                     final DatabaseReference userBookRef = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(currentUid);
 
-                    userBookRef.addValueEventListener(new ValueEventListener() {
+                    userBookRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            HashMap<String,Object> hashMap = new HashMap<>();
-                            hashMap.put("book_status",Book_Name);
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("book_status", Book_Name);
 
                             userBookRef.updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful())
-                                    {
+                                    if (task.isSuccessful()) {
                                         sendUserToMainActivity();
                                     }
                                 }
@@ -179,8 +185,34 @@ public class ChooseBookActivity extends AppCompatActivity {
         });
 
 
+    }
 
+    private void setingUserInfo()
+    {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String user_name = dataSnapshot.child("name").getValue().toString();
+                    String book_status = dataSnapshot.child("book_status").getValue().toString();
 
+                    TextView nameTV = findViewById(R.id.choose_book_username);
+                    TextView book_statusTV = findViewById(R.id.choose_book_book_status);
+                    ImageView userProfileImage = findViewById(R.id.choose_book_user_profile);
+
+                    int imageId = Integer.valueOf(dataSnapshot.child("profile").getValue().toString());
+                    userProfileImage.setImageResource(imageId);
+
+                    nameTV.setText(user_name);
+                    book_statusTV.setText("current book -> " +book_status);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void sendUserToMainActivity() {
@@ -190,7 +222,7 @@ public class ChooseBookActivity extends AppCompatActivity {
         finish();
     }
 
-    public class BookViewHolder extends RecyclerView.ViewHolder{
+    public class BookViewHolder extends RecyclerView.ViewHolder {
         public ImageView bookPic;
         public TextView bookName, wordCount, author;
 
@@ -200,19 +232,31 @@ public class ChooseBookActivity extends AppCompatActivity {
 
             bookPic = itemView.findViewById(R.id.all_book_layout_book_pic);
             bookName = itemView.findViewById(R.id.all_book_layout_book_name);
-           wordCount = itemView.findViewById(R.id.all_book_layout_word_count);
+            wordCount = itemView.findViewById(R.id.all_book_layout_word_count);
             author = itemView.findViewById(R.id.all_book_layout_author);
 
         }
     }
 
 
+    public void logout(View view) {
+        mAuth.signOut();
+        SendUserToAppIntroActivity();
+
+    }
+
+    private void SendUserToAppIntroActivity() {
+        Intent intent = new Intent(ChooseBookActivity.this, AppIntroActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+
+    }
 
     @Override
     protected void onStart() {
         adapter.startListening();
         super.onStart();
-
 
 
     }

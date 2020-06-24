@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
-    android:gravity="center">
+    android:background="@color/colorWhite">
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:orientation="vertical">
         <ImageView
             android:layout_width="300dp"
@@ -21,9 +23,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Yay!\nYou have learnt the Part 7 !!!"
+                android:text="You have learnt the Part 7 !!!"
                 android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
-                android:textColor="@color/colorBlack"
+                android:textStyle="normal"
+                android:textColor="@color/colorText"
                 android:textAlignment="center"
                 android:textSize="32sp"/>
 
@@ -33,21 +36,26 @@
 
             <Button
                 android:id="@+id/congratulation_btn"
-                android:layout_width="132dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Go to part 8"
                 android:textColor="@color/colorText"
                 android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
                 android:textSize="15dp"
-                android:background="@drawable/main__activity_register_button"
+                android:background="@drawable/congratulation_button"
                 android:textAllCaps="false"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="100dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginBottom="8dp"
                 android:elevation="6dp" />
         </RelativeLayout>
     </LinearLayout>
 
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewKonfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</RelativeLayout>
+</FrameLayout>

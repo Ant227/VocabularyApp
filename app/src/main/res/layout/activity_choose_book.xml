@@ -9,17 +9,46 @@
     android:orientation="vertical"
     tools:context=".ChooseBookActivity">
 
+    <ImageView
+        android:id="@+id/choose_book_user_profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/emoji1"
+        android:layout_marginTop="10dp"/>
+
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/choose_book_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:gravity="center"
         android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
-        android:layout_marginTop="20dp"
-        android:textSize="36dp"
+        android:layout_marginTop="4dp"
+        android:textSize="16sp"
         android:textColor="@color/colorText"
-        android:text="Set Up"/>
+        android:text="Ant"/>
+    <TextView
+        android:id="@+id/choose_book_book_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
+        android:textSize="16sp"
+        android:textColor="@color/colorText"
+        android:text="current Book -> The old man and the Sea"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:text="* Logout *"
+        android:layout_gravity="center_horizontal"
+        android:textSize="16sp"
+        android:textColor="@color/colorRed"
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
+        android:onClick="logout"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,7 +59,8 @@
         android:textColor="@color/colorText"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="32dp"
-        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
+        android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"
+        android:onClick="logout"/>
     
     <Button
         android:layout_width="match_parent"
@@ -162,7 +192,7 @@
                 android:layout_width="160dp"
                 android:layout_height="40dp"
                 android:text="Finish"
-                android:background="@drawable/main__activity_register_button"
+                android:background="@drawable/main_activity_register_button"
                 android:textColor="@color/colorText"
                 android:fontFamily="@font/fira_sans_extra_condensed_medium_italic"/>
 
